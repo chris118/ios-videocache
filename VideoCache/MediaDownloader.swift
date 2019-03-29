@@ -48,16 +48,14 @@ class MediaDownloader: NSObject {
         
         let request = NSMutableURLRequest(url: originalUrl)
         if let _dataRequest = dataRequest {
-            print("requestedOffset=\(_dataRequest.requestedOffset) currentOffset=\(_dataRequest.currentOffset) requestedLength=\(_dataRequest.requestedLength)")
+            print("requestHeaderInfo ------- requestedOffset=\(_dataRequest.requestedOffset) currentOffset=\(_dataRequest.currentOffset) requestedLength=\(_dataRequest.requestedLength)")
 
             let start = _dataRequest.currentOffset
             let end = _dataRequest.currentOffset + Int64(_dataRequest.requestedLength) - 1
             
             request.setValue("bytes=\(start)-\(end)", forHTTPHeaderField: "Range")
             self.task = self.session.dataTask(with: request as URLRequest)
-            
-            self.session.dataTask(with: request as URLRequest)
-            
+                    
             task?.resume()
             
              bytesOffset = end
@@ -97,7 +95,7 @@ extension MediaDownloader: URLSessionDataDelegate{
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
         
         let header = self.fillContentInformation(response: response)
-        print("mimeType: \(String(describing: header?.mimeType)) contentType: \(String(describing: header?.contentType)) contentRange: \(String(describing: header?.contentRange))")
+        print("fillContentInformation ------- mimeType: \(String(describing: header?.mimeType)) contentType: \(String(describing: header?.contentType)) contentRange: \(String(describing: header?.contentRange))")
         
         let mimeType = header?.mimeType ?? ""
         
@@ -109,7 +107,7 @@ extension MediaDownloader: URLSessionDataDelegate{
     }
     
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-         print("didReceive data: \(data.count) btyes")
+         print("didRecei ve data: \(data.count) btyes")
         self.loadingRequest?.dataRequest?.respond(with: data)
     }
 
