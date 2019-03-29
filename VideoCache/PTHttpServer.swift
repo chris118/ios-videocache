@@ -50,41 +50,41 @@ class PTHttpServer: NSObject {
         
     func statr() {
         
-//        webServer.addDefaultHandler(forMethod: "GET", request: GCDWebServerRequest.self, asyncProcessBlock: { (request, completionBlock) in
-//
-//            let filepath = Bundle.main.path(forResource: "v", ofType: "mp4")
-//
-//
-//            var contentRange = request.headers["Range"]
-//             print(contentRange!)
-//
-//            let response =  GCDWebServerFileResponse(file: filepath ?? "", byteRange: request.byteRange)
-//            completionBlock(response)
-//        })
-
-         let filepath = Bundle.main.path(forResource: "v", ofType: "mp4")!
-         let fileUrl = URL(string: filepath)!
-         let readHandler = try! FileHandle(forReadingFrom:fileUrl)
-        
         webServer.addDefaultHandler(forMethod: "GET", request: GCDWebServerRequest.self, asyncProcessBlock: { (request, completionBlock) in
 
-            var contentRange = request.headers["Range"]
-            print(contentRange!)
-            contentRange = contentRange?.subString(start: 6, length: (contentRange?.count)! - 6)
-            let strs = contentRange?.components(separatedBy: "-")
-            let start = Int(strs?[0] ?? "0")!
-            let end = Int(strs?[1] ?? "0")!
+            let filepath = Bundle.main.path(forResource: "v", ofType: "mp4")
 
-            readHandler.seek(toFileOffset: UInt64(start))
-            let data = readHandler.readData(ofLength: end + 1)
-            
-            let response = GCDWebServerDataResponse(data: data, contentType: "video/mp4")
-            
-            response.statusCode = 206
-            response.setValue("bytes \(contentRange!)/\(fileUrl.fileSize)", forAdditionalHeader: "Content-Range")
+
+            var contentRange = request.headers["Range"]
+             print(contentRange!)
+
+            let response =  GCDWebServerFileResponse(file: filepath ?? "", byteRange: request.byteRange)
             completionBlock(response)
         })
-        
+
+//         let filepath = Bundle.main.path(forResource: "v", ofType: "mp4")!
+//         let fileUrl = URL(string: filepath)!
+//         let readHandler = try! FileHandle(forReadingFrom:fileUrl)
+//
+//        webServer.addDefaultHandler(forMethod: "GET", request: GCDWebServerRequest.self, asyncProcessBlock: { (request, completionBlock) in
+//
+//            var contentRange = request.headers["Range"]
+//            print(contentRange!)
+//            contentRange = contentRange?.subString(start: 6, length: (contentRange?.count)! - 6)
+//            let strs = contentRange?.components(separatedBy: "-")
+//            let start = Int(strs?[0] ?? "0")!
+//            let end = Int(strs?[1] ?? "0")!
+//
+//            readHandler.seek(toFileOffset: UInt64(start))
+//            let data = readHandler.readData(ofLength: end + 1)
+//
+//            let response = GCDWebServerDataResponse(data: data, contentType: "video/mp4")
+//
+//            response.statusCode = 206
+//            response.setValue("bytes \(contentRange!)/\(fileUrl.fileSize)", forAdditionalHeader: "Content-Range")
+//            completionBlock(response)
+//        })
+//
         webServer.start(withPort: 3003, bonjourName: "HttpServer")
         
         print("Visit \(String(describing: webServer.serverURL)) in your web browser")
